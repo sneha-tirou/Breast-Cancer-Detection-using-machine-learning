@@ -1,0 +1,46 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sat Jun 11 03:47:52 2022
+
+@author: Sneha
+"""
+
+import pickle as pkl
+import streamlit as st
+import pandas as pd
+import numpy as np
+
+
+st.title('Breast Cancer Detection Application')
+
+st.header(
+    'Machine Learning Application to Predict the Breast Cancer Class - Benign | Malignant')
+st.write("Enter the details  for a prediction: ")
+radius = st.number_input(label="Cell Radius", step=1., format="%.2f")
+texture = st.number_input(label="Cell Texture", step=1., format="%.2f")
+perimeter = st.number_input(label="Cell Perimeter", step=1., format="%.2f")
+area = st.number_input(label="Cell Area", step=1., format="%.2f")
+smoothness = st.number_input(label="Smoothness", step=1., format="%.4f")
+compactness = st.number_input(label="Compactness", step=1., format="%.4f")
+concavity = st.number_input(label="Concavity", step=1., format="%.4f")
+concave_points = st.number_input(label="Concave Points", step=1., format="%.4f")
+symmetry = st.number_input(label="Symmetry", step=1., format="%.4f")
+fractal_dim = st.number_input(label="Fractal Dimensions", step=1., format="%.4f")
+
+if st.button("Submit."):
+    df = pd.DataFrame([[radius, texture, perimeter, area, smoothness,
+                      compactness, concavity, concave_points, symmetry, fractal_dim]])
+    if ((df.values == 0).all()):
+        st.error("Enter valid details!")
+    else:
+        with open('trained_model.sav', 'rb') as f2:
+            rf = pkl.load(f2)
+
+        pred = rf.predict(df)
+
+        st.success('Prediction computed!')
+        if(pred == [1]):
+            st.text(f"Prediction: MALIGNANT")
+        else:
+            st.text(f"Prediction: BENIGN")
+
